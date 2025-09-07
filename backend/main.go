@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sandysormin19/Jadwal-MRT/modules/station"
+	"os"
 	"time"
 )
 
@@ -14,9 +15,9 @@ func main() {
 func InitiateRouter() {
 	router := gin.Default()
 
-	// Konfigurasi CORS untuk API saja
+	// Konfigurasi CORS
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // untuk production bisa diganti domain tertentu
+		AllowOrigins:     []string{"*"}, // development
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
 		AllowCredentials: true,
@@ -28,8 +29,15 @@ func InitiateRouter() {
 	station.Initiate(api)
 
 	// Serve frontend React build
-	
+	router.Static("/static", "./frontend-build/static")
+	router.NoRoute(func(c *gin.Context) {
+		c.File("./frontend-build/index.html")
+	})
 
-	// Jalankan server
-	router.Run(":8080")
+	// Port dinamis
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	router.Run(":" + port)
 }
