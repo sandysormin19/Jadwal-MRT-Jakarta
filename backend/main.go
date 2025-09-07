@@ -28,10 +28,7 @@ func InitiateRouter() {
 	station.Initiate(api)
 
 	// Serve frontend React build
-	router.Static("/static", "./frontend-build/static") // folder static
-	router.NoRoute(func(c *gin.Context) {
-		c.File("./frontend-build/index.html") // selalu fallback ke index.html
-	})
+	
 
 	// Jalankan server
 	router.Run(":8080")
